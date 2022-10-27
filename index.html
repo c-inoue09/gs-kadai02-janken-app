@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <script src="js/jquery-2.1.3.min.js"></script>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="icon" href="/Users/chihiroinoue/Dropbox/2022/00_gs_academy/00_html/cheese-academy2/img/meta/favicon.png" />
+    <script src="https://kit.fontawesome.com/7535312398.js" crossorigin="anonymous"></script>
+    <title>JANKENTALE</title>
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://github.com/c-inoue09/gs-kadai02-janken-app/">
+    <meta property="og:image" content="https://github.com/c-inoue09/gs-kadai02-janken-app/img/ogp.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="JANKENTALE" />
+    <meta property="og:description" content="だれもころさなくていい やさしいじゃんけんアプリ" />
+    <meta property="og:site_name" content="JANKENTALE | Presentated by イノウエ" />
+
+</head>
+
+<body>
+
+    <header>
+    </header>
+
+    <main>
+        <div class="wrapper">
+            <div class="game-area">
+                <div id="inoue-img">
+                    <img src="img/inoue-smile1.png" alt="" class="imgBefore">
+                </div>
+
+                <div id="conversationArea">
+                    <p>＊ イノウエが あらわれた！</p>
+                </div>
+
+                <div class="status-area">
+                    <dl class="status-inner">
+                        <dt class="player-status">あなたのステータス</dt>
+                          <dd id="player-hp">HP: 500</dd>
+                          <dd id="player-cheese">のこりチーズ: 2こ</dd>
+                        <dt class="inoue-status">イノウエのステータス</dt>
+                          <dd id="inoue-hp">HP: 500</dd>
+                          <dd class="inoue-yaruki">あまのじゃく: ∞</dd>
+                    </dl>
+                </div>
+
+                <div class="command-area">
+                    <ul class="commandLists">
+                        <li class="command-item act has-child">さそう
+                            <ul>
+                                <li class = "commandAct nomu" data-score="1" data-act="のみかい">のみかい</li>
+                                <li class = "commandAct neru" data-score="2" data-act="すいみん">すいみん</li>
+                                <li class = "commandAct gari" data-score="3" data-act="ジーズのかだい">ジーズのかだい</li>
+                            </ul>
+                        </li>
+                        <li class="command-item cheese">チーズ</li>
+                        <li class="command-item mercy">みのがす</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="modal_pop_lose">
+                <div class="bg js-modal-close"></div>
+                <div class="modal_pop_main modal_pop">
+                    <img src="img/end-lose.png" style="width:600px;">
+                </div>
+            </div>
+            <div class="modal_pop_true">
+                <div class="bg js-modal-close"></div>
+                <div class="modal_pop_main modal_pop">
+                    <img src="img/end-true.png" style="width:600px;">
+                </div>
+            </div>
+            <div class="modal_pop_dead">
+                <div class="modal_pop_dead_inner modal_pop">
+                    <img src="img/end-dead.png" style="width: 1920px;">
+                  </div>
+            </div>
+
+    </main>
+
+    <footer></footer>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+    <script src="http://coco-factory.jp/ugokuweb/wp-content/themes/ugokuweb/data/move02/8-2/js/8-2.js"></script>
+    <script>
+
+    let playerHp = 500; 
+    let inoueHp = 500; 
+    let inoueAct = "";
+    let imgAfter = "";
+    let cheeseRest = 2;
+    let mercyFlag = "off";
+    let inoueDeadFlag = "off";
+    console.log(`プレイヤーのHPは${playerHp}`);
+    console.log(`イノウエのHPは${inoueHp}`);
+    $('.modal_pop_lose').hide(); //ゲームスタート時にはゲームオーバー演出を隠しておく
+    $('.modal_pop_true').hide(); //ゲームスタート時にはゲームオーバー演出を隠しておく
+    $('.modal_pop_dead').hide(); //ゲームスタート時にはゲームオーバー演出を隠しておく
+
+    let win = ()=>{
+        $("#inoue-img").html(imgAfter);
+        inoueHp -=  200;
+        playerHp += 100; 
+        console.log(playerHp);
+        console.log(inoueHp);
+        
+    }; // プレイヤー勝ちの場合のHP増減を関数で定義
+        
+    let lose = ()=>{
+        $("#inoue-img").html(imgAfter);
+        inoueHp +=  100;
+        playerHp -= 150; 
+        console.log(playerHp);
+        console.log(inoueHp);
+    }; // プレイヤー負けの場合のHP増減を関数で定義
+
+    let tie = ()=>{
+        $("#inoue-img").html(imgAfter);
+        console.log(playerHp);
+        console.log(inoueHp);
+    }; // あいこの場合を関数で定義
+
+        
+
+    $(".commandAct").on("click",function(){
+        let inoueHand = Math.ceil(Math.random()*3); // 井上の行動をランダムで選択(1が飲み会、2が睡眠、3がジーズ課題)
+        let playerHand = $(this).attr("data-score"); //クリックしたactのdata-scoreの値を取得し、playerHandに代入
+        let playerAct = $(this).attr("data-act"); //クリックしたactのdata-actの値を取得し、playerAct(表示用文字列)に代入
+
+        console.log(`プレイヤーの手は${playerAct}`); 
+        console.log(`playerHandは${playerHand}`); 
+
+        //イノウエの行動を数値から文字列に変換し、inoueAct(表示用文字列)に代入
+        if(inoueHand == 1){
+            inoueAct = "のみかい";
+            console.log(`イノウエの手は${inoueAct}`);
+        }
+        if(inoueHand == 2){
+            inoueAct = "すいみん";
+            console.log(`イノウエの手は${inoueAct}`);
+        }
+        if(inoueHand == 3){
+            inoueAct = "ジーズのかだい";
+            console.log(`イノウエの手は${inoueAct}`);
+        }
+        
+
+        let conversation = (function(){
+            let actResponse = confirm(`${playerAct} をていあんする？`);
+
+            if(playerHand == 1 && inoueHand == 1){
+                tie();
+                console.log(playerHand);
+                imgAfter = `<img src = "img/inoue-${playerHand}-${inoueHand}.png" class = "imgAfter">`;
+                return `<p>＊ あなたは${playerAct}をていあんした！ イノウエはのみにいきたそうだ！</p>
+                <p>ひきわけ！ はらじゅくの とりきぞくにいった。HPぞうげんなし！</p>`;
+            }
+            if(playerHand == 1 && inoueHand == 2){
+                win();
+                console.log(playerHand);
+                imgAfter = `<img src = "img/inoue-${playerHand}-${inoueHand}.png" class = "imgAfter">`;
+                return `<p>＊ あなたは${playerAct}をていあんした！ イノウエはねむそうにしている！</p>
+                <p>${playerAct}は ${inoueAct}に しょうりした。 100HP かいふく！イノウエに 200HPのダメージ！</p>`;
+            }
+            if(playerHand == 1 && inoueHand == 3){
+                lose();
+                console.log(playerHand);
+                imgAfter = `<img src = "img/inoue-${playerHand}-${inoueHand}.png" class = "imgAfter">`;
+                return `<p>＊ あなたは${playerAct}をていあんした！イノウエはジーズのかだいをやってる！ </p>
+                <p>${playerAct}は ${inoueAct}に まけてしまった… 150HPのダメージ！ イノウエは100HPかいふく！</p>`;
+            }
+            if(playerHand == 2 && inoueHand == 1){
+                console.log(playerHp);
+                lose();
+                imgAfter = `<img src = "img/inoue-${playerHand}-${inoueHand}.png" class = "imgAfter">`;
+                return `<p>＊ あなたは${playerAct}をていあんした！ イノウエはのみにいきたそうだ！</p>
+                
+                <p>${playerAct}は ${inoueAct}に まけてしまった。 150HPのダメージ！ イノウエは100HPかいふく！</p>`;
+            }
+            if(playerHand == 2 && inoueHand == 2){
+                tie();
+                imgAfter = `<img src = "img/inoue-${playerHand}-${inoueHand}.png" class = "imgAfter">`;
+                return `<p>＊ あなたは${playerAct}をていあんした！ イノウエはねむそうにしている！</p>
+                
+                <p>ひきわけ！ ふとんをしいて 9じにねた！ HPぞうげんなし！</p>`;
+            }
+            if(playerHand == 2 && inoueHand == 3){
+                win();
+                imgAfter = `<img src = "img/inoue-${playerHand}-${inoueHand}.png" class = "imgAfter">`;
+                return `<p>＊ あなたは${playerAct}をていあんした！ イノウエはジーズのかだいをやってる！</p>
+                
+                <p>${playerAct}は ${inoueAct}に しょうりした！ 100HP かいふく！イノウエに 200HPのダメージ！</p>`;
+            }
+            if(playerHand == 3 && inoueHand == 1){
+                win();
+                imgAfter = `<img src = "img/inoue-${playerHand}-${inoueHand}.png" class = "imgAfter">`;
+                return `<p>＊ あなたは${playerAct}をていあんした！ イノウエはのみにいきたそうだ！</p>
+                <p>${playerAct}は ${inoueAct}に しょうりした！ 100HP かいふく！イノウエに 200HPのダメージ！</p>`;
+            }
+            if(playerHand == 3 && inoueHand == 2){
+                lose();
+                imgAfter = `<img src = "img/inoue-${playerHand}-${inoueHand}.png" class = "imgAfter">`;
+                return `<p>＊ あなたは${playerAct}をていあんした！ イノウエはねむそうにしている！</p>
+                
+                <p>${playerAct}は ${inoueAct}に まけてしまった。 150HPのダメージ！ イノウエは100HPかいふく！</p>`;
+            }
+            if(playerHand == 3 && inoueHand == 3){
+                imgAfter = `<img src = "img/inoue-${playerHand}-${inoueHand}.png" class = "imgAfter">`;
+                tie();
+                return `<p>＊ あなたは${playerAct}をていあんした！ イノウエはジーズのかだいをやってる！</p>
+                <p>ひきわけ！ ふつうに P2Pがくしゅうに なった！ HPぞうげんなし！</p>`;
+            }
+
+        })();
+
+        $("#conversationArea").html(conversation); // conversationの出力結果をconversationAreaに表示
+        $("#inoue-img").html(imgAfter); // conversationの出力結果をconversationAreaに表示
+        
+        // 勝負後のプレイヤーとイノウエのHPを表示
+        $("#player-hp").html(`<dd>HP: ${playerHp}</dd>`);
+        $("#inoue-hp").html(`<dd>HP: ${inoueHp}</dd>`);
+
+        // プレイヤーの負け判定
+        if (playerHp <= 0){
+            console.log("あなたのまけ！");
+            let appearUserLoseImg = ()=>{
+                $('.modal_pop_lose').fadeIn();
+            };
+            setTimeout(appearUserLoseImg,1000);        
+    }
+        
+        if (inoueHp <= 0){ // イノウエのHPが0以下になったときの処理
+            console.log("イノウエのまけ！");
+            $("#conversationArea").html(`<p>＊ さいさんにわたり プライドをおられた イノウエは</p>
+            <p>まっしろに もえつきた…</p>`);
+            let appearDeadImg = function(){
+            $('.modal_pop_dead').fadeIn();
+            console.log("fade in");
+            };
+            let disappearDeadImg = function(){
+                $('.modal_pop_dead').fadeOut();
+                console.log("fade out");
+            };
+            setTimeout(appearDeadImg,100);
+            setTimeout(disappearDeadImg,2000);
+            $("#inoue-img").html(`<img src = "img/inoue-dead.png" class = "imgBefore">`);
+            mercyFlag = "off";
+            inoueDeadFlag = "on";
+        }
+
+        if (inoueHp <= 150 && inoueHp > 0){
+            let mercyAlert = ()=>{
+                alert("イノウエは HPがへって よわっている。このへんで みのがして あげたら？");
+            }
+            setTimeout(mercyAlert,100);
+            mercyFlag = "on";
+
+            let inoueHinshiImg =() =>{
+                $("#inoue-img").html(`<img src = "img/inoue-hinshi.png" class = "imgAfter">`);
+            }
+            setTimeout(inoueHinshiImg,1000);
+
+        }
+
+
+        });
+
+    //「チーズ」が押下されたときの挙動
+    $(".cheese").on("click",function(){
+        let response = confirm("チーズをたべて かいふくする？");
+        if (cheeseRest <= 0){
+            alert("チーズは もうない。");
+        }
+        else{
+            if (response == true){
+            cheeseRest -= 1;
+            let recoverNumber = Math.ceil(Math.random()*3)*50
+            playerHp += recoverNumber;
+            alert(`チーズを たべた！ HPが${recoverNumber} かいふくした！`);
+            $("#player-cheese").html(`<dd>のこりチーズ: ${cheeseRest}こ</dd>`);
+            $("#player-hp").html(`<dd>HP: ${playerHp}</dd>`);
+        }}
+    });
+
+    //「みのがす」が押下されたときの挙動
+    $(".mercy").on("click",function(){
+        let responseMercy = confirm("イノウエを みのがしてあげる？");
+        if (mercyFlag == "off" && inoueDeadFlag == "off"){
+            alert("みのがすには よわらせる ひつようがあるようだ…");
+        }
+
+        if (mercyFlag == "off" && inoueDeadFlag == "on"){
+            alert("もう おそい。");
+        }
+
+        if (mercyFlag == "on"){
+            console.log("だいだんえん！");
+            $('.modal_pop_true').fadeIn("slow");
+        }}    
+    );
+
+
+    </script>
+
+</body>
+</html>
+
+
