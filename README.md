@@ -1,5 +1,7 @@
 # 課題　じゃんけんアプリ「JANKENTALE」
 
+<img src ="https://user-images.githubusercontent.com/113824527/198418258-d7ac987c-3831-4d0f-9f65-95437b3e8a50.png" width="600px">
+
 ## ①課題内容（どんな作品か）
 - 大好きなゲーム「UNDERTALE」のパロディで、敵(イノウエ)と戦う「JANKENTALE」を作りました。
 - プレイヤーは「さそう」「チーズ(をたべる)」「みのがす」という行動をとれます。
