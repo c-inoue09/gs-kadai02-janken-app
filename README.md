@@ -3,7 +3,7 @@
 <img src ="https://user-images.githubusercontent.com/113824527/198418258-d7ac987c-3831-4d0f-9f65-95437b3e8a50.png" width="600px">
 
 ## ①課題内容（どんな作品か）
-- 大好きなゲーム「UNDERTALE」のパロディで、敵(イノウエ)と戦う「JANKENTALE」を作りました。
+- 大好きなゲーム「[UNDERTALE](https://store.steampowered.com/app/391540/Undertale/?l=japanese)」のパロディで、敵(イノウエ)と戦う「JANKENTALE」を作りました。
 - プレイヤーは「さそう」「チーズ(をたべる)」「みのがす」という行動をとれます。
 - プレイヤーの選択によってヒットポイント(HP)が増減し、3種類のエンディングに分岐します。
   - 「ハッピーエンド」「ノーマルエンド」「XXXエンド」があります。ぜんぶ見られるかな…！？
@@ -59,3 +59,4 @@
   
 - そのほか
   - [Visual Studio CodeでMarkdownをプレビューする](https://qiita.com/k_maki/items/d2ed604ac967e029c9a9)
+  - [OGPの正しい設定方法を解説！Facebook・Twitter対応](https://mirai-creators.com/2199/)
